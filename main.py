@@ -78,5 +78,4 @@ async def obtener_datos_clima():
         else:
             print("Error al obtener datos meteorológicos:", response.status_code)
 
-# Ejecutar la función main()
 asyncio.run(main())
