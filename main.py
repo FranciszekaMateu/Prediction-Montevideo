@@ -3,8 +3,21 @@ import asyncio
 from datetime import datetime, timedelta
 import schedule
 import time
+import os
+from dotenv import load_dotenv
+from supabase import create_client, Client
 
 primer_ejecucion = True  
+load_dotenv()
+
+TRANSPORTE_CLIENT_ID = os.getenv("TRANSPORTE_CLIENT_ID")
+TRANSPORTE_CLIENT_SECRET = os.getenv("TRANSPORTE_CLIENT_SECRET")
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_API_KEY = os.getenv("SUPABASE_API_KEY")
+
+
+supabase: Client = create_client(SUPABASE_URL, SUPABASE_API_KEY)
+
 
 async def main():
     global primer_ejecucion  
@@ -34,8 +47,8 @@ async def obtener_datos():
 
 async def obtener_datos_transporte():
     token_url = "https://mvdapi-auth.montevideo.gub.uy/auth/realms/pci/protocol/openid-connect/token"
-    client_id = "e131f1da"  
-    client_secret = "4035ef34d9e934542d033485fa17bbe5"  
+    client_id = TRANSPORTE_CLIENT_ID   
+    client_secret = TRANSPORTE_CLIENT_SECRET 
 
     token_params = {
         "grant_type": "client_credentials",
@@ -67,14 +80,14 @@ async def obtener_datos_transporte():
 async def obtener_datos_clima():
    
 
-    url = f"https://api.open-meteo.com/v1/forecast?latitude=-32.5228&longitude=-55.7658&current=temperature_2m,relative_humidity_2m"    
+    url = f"https://api.open-meteo.com/v1/forecast?latitude=-32.5228&longitude=-55.7658&current=temperature_2m,relative_humidity_2m,wind_speed_10m"    
     async with httpx.AsyncClient() as client:
         response = await client.get(url)
 
         if response.status_code == 200:
             datos_clima = response.json()
-            temperatura = datos_clima["current"]["temperature_2m"]
-            print(f"La temperatura en Uruguay es de {temperatura} grados Celsius.")
+            variables_clima = datos_clima["current"]["temperature_2m"]
+            print(datos_clima)
         else:
             print("Error al obtener datos meteorológicos:", response.status_code)
 
