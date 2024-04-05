@@ -61,7 +61,6 @@ async def obtener_datos():
                 }
                 
             supabase.table('Primera_iteracion').insert([data1, data2]).execute()
-                  # Si todos los datos son válidos, salimos del bucle
         else:
             print("Algunas de las peticiones de datos dio error, intentando nuevamente...")
             await asyncio.sleep(5)
